@@ -63,6 +63,7 @@ export async function handleSignUp(
     await newUser.save();
 
     console.log("User created successfully:", newUser);
+    return "success";
   } catch (error) {
     if (error instanceof ZodError) {
       const errorMessages = parseZodErrors(error);

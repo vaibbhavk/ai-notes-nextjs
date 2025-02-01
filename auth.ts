@@ -65,14 +65,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith("/");
-      if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL("/", nextUrl));
+      const isSignInOrSignUp =
+        nextUrl.pathname === "/sign-in" || nextUrl.pathname === "/sign-up";
+
+      if (isSignInOrSignUp) {
+        if (isLoggedIn) {
+          return Response.redirect(new URL("/", nextUrl)); // Redirect authenticated users to home
+        }
+        return true; // Allow unauthenticated users to access sign-in/up
       }
-      return true;
+
+      // For other routes, require authentication
+      if (!isLoggedIn) {
+        return Response.redirect(new URL("/sign-in", nextUrl)); // Redirect unauthenticated users to sign-in
+      }
+
+      return true; // Allow authenticated users to access other routes
     },
   },
 });

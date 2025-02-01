@@ -15,15 +15,18 @@ import Link from "next/link";
 import { handleSignUp } from "@/app/actions/auth";
 import { useActionState } from "react";
 import { CircleAlert } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [errorMessage, formAction, isPending] = useActionState(
+  const [state, formAction, isPending] = useActionState(
     handleSignUp,
     undefined
   );
+
+  if (state === "success") redirect("/sign-in");
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -69,10 +72,10 @@ export function SignUpForm({
                 aria-live="polite"
                 aria-atomic="true"
               >
-                {errorMessage && (
+                {state && state !== "success" && (
                   <>
                     <CircleAlert className="h-5 w-5 text-red-500" />
-                    <p className="text-sm text-red-500">{errorMessage}</p>
+                    <p className="text-sm text-red-500">{state}</p>
                   </>
                 )}
               </div>
