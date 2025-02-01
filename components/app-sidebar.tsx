@@ -13,6 +13,8 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { Session } from "next-auth";
+import { UserDocument } from "@/models/User";
 
 // This is sample data.
 const data = {
@@ -36,7 +38,11 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  session: Session | null;
+}
+
+export function AppSidebar({ session, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props} variant="floating">
       <SidebarHeader>
@@ -46,7 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={session?.user as UserDocument} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
