@@ -1,46 +1,67 @@
+"use server";
+
 import { connectDB } from "@/lib/db";
+import { createNoteSchema } from "@/lib/zod";
+import Note from "@/models/Note";
 import { parseZodErrors } from "@/utils/parseZodErrors";
+import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 
 export async function createNote(
   prevState: string | undefined,
   formData: FormData
 ) {
-  return "success";
-  // try {
-  //   await connectDB();
-  //   const { name, email, password } = await signUpSchema.parseAsync({
-  //     name: formData.get("name"),
-  //     email: formData.get("email"),
-  //     password: formData.get("password"),
-  //   });
+  try {
+    await connectDB();
+    const { desc } = await createNoteSchema.parseAsync({
+      desc: formData.get("desc"),
+    });
 
-  //   // Check if the user already exists
-  //   const existingUser = await User.findOne({ email });
-  //   if (existingUser) {
-  //     throw new Error("User already exists.");
-  //   }
+    const userId = formData.get("userId");
+    const title = "";
 
-  //   // Hash the password
-  //   const hashedPassword = await bcrypt.hash(password, 10);
+    // Create a new note
+    const newNote = new Note({
+      title,
+      desc,
+      userId,
+    });
 
-  //   // Create a new user
-  //   const newUser = new User({
-  //     email,
-  //     password: hashedPassword,
-  //     name,
-  //   });
+    await newNote.save();
 
-  //   await newUser.save();
+    console.log("Note added successfully:", newNote);
 
-  //   console.log("User created successfully:", newUser);
-  //   return "success";
-  // } catch (error) {
-  //   if (error instanceof ZodError) {
-  //     const errorMessages = parseZodErrors(error);
-  //     return errorMessages[0];
-  //   }
-  //   console.error("Error during sign-up:", error);
-  //   return "Something went wrong";
-  // }
+    revalidatePath("/");
+
+    return `Note added successfully ${newNote._id}`;
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const errorMessages = parseZodErrors(error);
+      return errorMessages[0];
+    }
+    console.error("Error while creating note", error);
+    return "Something went wrong";
+  }
+}
+
+export async function deleteNote(
+  prevState: string | undefined,
+  noteId: string
+) {
+  try {
+    await connectDB();
+
+    await Note.findByIdAndDelete(noteId);
+
+    console.log("Note deleted successfully");
+
+    revalidatePath("/");
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const errorMessages = parseZodErrors(error);
+      return errorMessages[0];
+    }
+    console.error("Error while creating note", error);
+    return "Something went wrong";
+  }
 }

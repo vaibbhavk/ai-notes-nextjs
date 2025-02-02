@@ -6,21 +6,22 @@ import { useActionState, useEffect, useState } from "react";
 import { Textarea } from "./ui/textarea";
 import { Images, Pencil, Plus } from "lucide-react";
 import { createNote } from "@/app/actions/note";
+import Spinner from "./spinner";
 
 const RecordingInput = ({ userId }: { userId: string }) => {
   const [text, setText] = useState("");
   const [state, formAction, isPending] = useActionState(createNote, undefined);
 
   useEffect(() => {
-    if (state === "success") {
-      setText("");
-    }
+    setText("");
   }, [state]);
 
   return (
     <div className="max-w-4xl mx-auto fixed bottom-0 left-0 md:left-[17rem] right-0 bg-white flex items-end py-4">
       <form className="relative mx-auto w-full" action={formAction}>
         <Textarea
+          id="desc"
+          name="desc"
           className="flex-grow resize-none pl-24 pr-44 rounded-full no-scrollbar"
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -54,6 +55,8 @@ const RecordingInput = ({ userId }: { userId: string }) => {
               size="icon"
               className="rounded-full mr-3"
               type="submit"
+              aria-disabled={isPending}
+              disabled={isPending}
             >
               <Plus />
             </Button>
