@@ -35,11 +35,7 @@ export default function Home() {
 
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="apple">Apple</SelectItem>
-              <SelectItem value="banana">Banana</SelectItem>
-              <SelectItem value="blueberry">Blueberry</SelectItem>
-              <SelectItem value="grapes">Grapes</SelectItem>
-              <SelectItem value="pineapple">Pineapple</SelectItem>
+              <SelectItem value="old_to_new">Date: Old to New</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

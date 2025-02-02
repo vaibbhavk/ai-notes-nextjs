@@ -8,6 +8,7 @@ const RecordingControls = ({ setText }) => {
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const synth = window.speechSynthesis;
@@ -23,8 +24,7 @@ const RecordingControls = ({ setText }) => {
 
   const startRecording = () => {
     if (isRecording) {
-      recognitionRef.current?.stop();
-      setIsRecording(false);
+      stopRecording();
       return;
     }
 
@@ -38,10 +38,17 @@ const RecordingControls = ({ setText }) => {
 
     recognitionRef.current.onstart = () => {
       setIsRecording(true);
+      // Set a timer to stop recording after 1 minute
+      timerRef.current = setTimeout(() => {
+        stopRecording();
+      }, 60000);
     };
 
     recognitionRef.current.onend = () => {
       setIsRecording(false);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     };
 
     recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
@@ -54,6 +61,14 @@ const RecordingControls = ({ setText }) => {
     };
 
     recognitionRef.current.start();
+  };
+
+  const stopRecording = () => {
+    recognitionRef.current?.stop();
+    setIsRecording(false);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
   };
 
   return (

@@ -9,6 +9,21 @@ import { Images, Pencil } from "lucide-react";
 const RecordingInput = () => {
   const [text, setText] = useState("");
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSubmit();
+      // handleSubmit();
+    } else if (event.key === "Enter" && event.shiftKey) {
+      event.preventDefault();
+      setText((prevText) => prevText + "\n");
+    }
+  };
+
+  const handleSubmit = async () => {
+    console.log("Submit the note");
+  };
+
   return (
     <div className="max-w-4xl mx-auto fixed bottom-0 left-0 md:left-[17rem] right-0 bg-white flex items-end py-4">
       <div className="relative mx-auto w-full">
@@ -16,6 +31,7 @@ const RecordingInput = () => {
           className="flex-grow resize-none pl-24 pr-44 rounded-full no-scrollbar"
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
 
         <div className="absolute left-0 bottom-0">
