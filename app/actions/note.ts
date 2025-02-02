@@ -1,7 +1,7 @@
 "use server";
 
 import { connectDB } from "@/lib/db";
-import { createNoteSchema } from "@/lib/zod";
+import { createNoteSchema, updateNoteSchema } from "@/lib/zod";
 import Note from "@/models/Note";
 import { parseZodErrors } from "@/utils/parseZodErrors";
 import { revalidatePath } from "next/cache";
@@ -34,6 +34,39 @@ export async function createNote(
     revalidatePath("/");
 
     return `Note added successfully ${newNote._id}`;
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const errorMessages = parseZodErrors(error);
+      return errorMessages[0];
+    }
+    console.error("Error while creating note", error);
+    return "Something went wrong";
+  }
+}
+
+export async function updateNote(
+  prevState: string | undefined,
+  formData: FormData
+) {
+  try {
+    await connectDB();
+    const { title, desc } = await updateNoteSchema.parseAsync({
+      title: formData.get("title"),
+      desc: formData.get("desc"),
+    });
+
+    const noteId = formData.get("noteId");
+
+    await Note.findByIdAndUpdate(noteId, {
+      title,
+      desc,
+    });
+
+    console.log("Note updated successfully");
+
+    revalidatePath("/");
+
+    return `Note updated successfully ${noteId}`;
   } catch (error) {
     if (error instanceof ZodError) {
       const errorMessages = parseZodErrors(error);

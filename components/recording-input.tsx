@@ -6,7 +6,6 @@ import { useActionState, useEffect, useState } from "react";
 import { Textarea } from "./ui/textarea";
 import { Images, Pencil, Plus } from "lucide-react";
 import { createNote } from "@/app/actions/note";
-import Spinner from "./spinner";
 
 const RecordingInput = ({ userId }: { userId: string }) => {
   const [text, setText] = useState("");
