@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Notes App with Speech",
+  title: "AI Notes",
   description: "This app has a speech to text feature",
 };
 
