@@ -19,3 +19,12 @@ export const signUpSchema = object({
     .min(8, "Password must be at least 8 characters long")
     .max(32, "Password must be less than 32 characters"),
 });
+
+export const createNoteSchema = object({
+  desc: string().min(1, "Description is required"),
+});
+
+export const updateNoteSchema = object({
+  title: string().min(1, "Title is required"),
+  desc: string().min(1, "Description is required"),
+});
