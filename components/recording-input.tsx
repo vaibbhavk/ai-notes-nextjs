@@ -2,37 +2,31 @@
 
 import { Button } from "./ui/button";
 import RecordingControls from "./recording-controls";
-import { useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Textarea } from "./ui/textarea";
-import { Images, Pencil } from "lucide-react";
+import { Images, Pencil, Plus } from "lucide-react";
+import { createNote } from "@/app/actions/note";
 
-const RecordingInput = () => {
+const RecordingInput = ({ userId }: { userId: string }) => {
   const [text, setText] = useState("");
+  const [state, formAction, isPending] = useActionState(createNote, undefined);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      handleSubmit();
-      // handleSubmit();
-    } else if (event.key === "Enter" && event.shiftKey) {
-      event.preventDefault();
-      setText((prevText) => prevText + "\n");
+  useEffect(() => {
+    if (state === "success") {
+      setText("");
     }
-  };
-
-  const handleSubmit = async () => {
-    console.log("Submit the note");
-  };
+  }, [state]);
 
   return (
     <div className="max-w-4xl mx-auto fixed bottom-0 left-0 md:left-[17rem] right-0 bg-white flex items-end py-4">
-      <div className="relative mx-auto w-full">
+      <form className="relative mx-auto w-full" action={formAction}>
         <Textarea
           className="flex-grow resize-none pl-24 pr-44 rounded-full no-scrollbar"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          onKeyDown={handleKeyDown}
         />
+
+        <input type="hidden" name="userId" value={userId} />
 
         <div className="absolute left-0 bottom-0">
           <div className="flex items-center justify-between m-3">
@@ -54,9 +48,19 @@ const RecordingInput = () => {
         </div>
 
         <div className="absolute right-0 bottom-0">
-          <RecordingControls setText={setText} />
+          <div className="flex items-center justify-between m-3">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full mr-3"
+              type="submit"
+            >
+              <Plus />
+            </Button>
+            <RecordingControls setText={setText} />
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

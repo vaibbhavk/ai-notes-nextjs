@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import RecordingInput from "@/components/recording-input";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +13,9 @@ import { Trigger } from "@radix-ui/react-select";
 import { Search, SlidersHorizontal } from "lucide-react";
 import React from "react";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+
   return (
     <div className="p-2">
       <div className="flex items-center mb-6">
@@ -46,7 +49,7 @@ export default function Home() {
         <Card className="p-4 border rounded-2xl">Task 3</Card>
         <Card className="p-4 border rounded-2xl">Task 4</Card>
       </div>
-      <RecordingInput />
+      <RecordingInput userId={session?.user?.id} />
     </div>
   );
 }

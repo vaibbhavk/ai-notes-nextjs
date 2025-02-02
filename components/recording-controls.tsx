@@ -72,13 +72,11 @@ const RecordingControls = ({ setText }) => {
   };
 
   return (
-    <div className="flex items-center justify-between m-3">
-      <Button className="bg-red-500 rounded-full" onClick={startRecording}>
-        {isRecording ? <Circle fill="#ffffff" /> : <Mic />}
+    <Button className="bg-red-500 rounded-full" onClick={startRecording}>
+      {isRecording ? <Circle fill="#ffffff" /> : <Mic />}
 
-        {isRecording ? "Stop Recording" : "Start Recording"}
-      </Button>
-    </div>
+      {isRecording ? "Stop Recording" : "Start Recording"}
+    </Button>
   );
 };
 
