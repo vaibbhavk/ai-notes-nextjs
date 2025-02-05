@@ -1,12 +1,5 @@
 import { auth } from "@/auth";
 import RecordingInput from "@/components/recording-input";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardTitle,
-} from "@/components/ui/card";
 import NoteCard from "@/components/ui/note-card";
 import NotesSearch from "@/components/ui/notes-search";
 import {
@@ -18,9 +11,8 @@ import {
 } from "@/components/ui/select";
 import { connectDB } from "@/lib/db";
 import Note, { NoteDocument } from "@/models/Note";
-import { formatCreatedAt } from "@/utils/formatDate";
 import { Trigger } from "@radix-ui/react-select";
-import { Clipboard, Images, SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import React from "react";
 
 export default async function Home({
